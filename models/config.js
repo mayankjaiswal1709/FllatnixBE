@@ -1,10 +1,22 @@
 const mongoose = require("mongoose");
 require("dotenv").config();
 
-mongoose.connect(process.env.URL, { useNewUrlParser: true });
-mongoose.connection.on("connected", (err, res) => {
-  console.log(`mongoDb is connected `);
+const mongoURI = process.env.URl;
+
+if (!mongoURI) {
+  console.error("MONGODB URL is not defined in environment variables.");
+  process.exit(1); 
+}
+
+mongoose.connect(mongoURI, {
+  useNewUrlParser: true,
+  useUnifiedTopology: true,
 });
-mongoose.connection.on("error", (err, res) => {
-  console.log(`mongoDb connection error ${err}`);
+
+mongoose.connection.on("connected", () => {
+  console.log("mongoDb is connected");
+});
+
+mongoose.connection.on("error", (err) => {
+  console.log("mongoDb connection error", err);
 });
